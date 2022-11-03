@@ -18,7 +18,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// init routes
 require("./routes/auth.routes")(app);
+require("./routes/user.routes")(app);
 
 app.listen(port, () => {
   console.log(`server run port ${port}`);
