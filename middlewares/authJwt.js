@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
 const db = require("../models");
+require("dotenv").config();
 const User = db.user;
 const Role = db.role;
 
@@ -11,7 +12,8 @@ verifyToken = (req, res, next) => {
     return res.status(403).send({ message: "No token provided!" });
   }
 
-  jwt.verify(token, config.secret, (err, decoded) => {
+  //jwt.verify(token, config.secret, (err, decoded) => {
+  jwt.verify(token, process.env.SECRET, (err, decoded) => {
     if (err) {
       return res.status(401).send({ message: "Unauthorized!" });
     }
@@ -69,13 +71,13 @@ isSuperUser = (req, res, next) => {
         }
 
         for (let i = 0; i < roles.length; i++) {
-          if (roles[i].name === "usperUser") {
+          if (roles[i].name === "superUser" || roles[i].name === "admin") {
             next();
             return;
           }
         }
 
-        res.status(403).send({ message: "Require Moderator Role!" });
+        res.status(403).send({ message: "Require superUser or admin Role!" });
         return;
       }
     );

@@ -1,5 +1,6 @@
 const { authJwt } = require("../middlewares");
 const controller = require("../controllers/user.controller");
+const controllerUser = require("../controllers/auth.controller");
 
 module.exports = function (app) {
   app.use(function (req, res, next) {
@@ -10,6 +11,7 @@ module.exports = function (app) {
     next();
   });
 
+  // app.get("/api/app/all", controller.allAccess);
   app.get("/api/app/all", controller.allAccess);
 
   app.get("/api/app/user", [authJwt.verifyToken], controller.userBoard);
@@ -24,5 +26,11 @@ module.exports = function (app) {
     "/api/app/admin",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.adminBoard
+  );
+
+  app.put(
+    "/api/app/editUser",
+    [authJwt.verifyToken, authJwt.isSuperUser],
+    controllerUser.editUser
   );
 };

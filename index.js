@@ -4,14 +4,17 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const dbConfig = require("./config/db.config");
 const db = require("./models");
+require("dotenv").config();
+
 const Role = db.role;
-let port = process.env.PORT || 5000;
+let port = process.env.PORT || 8080;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 var corsOptions = {
-  origin: "http://localhost:8081",
+  //origin: "http://localhost:8081",
+  origin: process.env.URL_FRONTEND,
 };
 
 app.use(cors(corsOptions));
@@ -32,7 +35,8 @@ app.get("/", (req, res) => {
 
 // MongoDb
 db.mongoose
-  .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
+  // .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
+  .connect(process.env.DB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

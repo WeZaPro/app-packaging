@@ -6,13 +6,20 @@ const User = mongoose.model(
     username: String,
     email: String,
     password: String,
-    adAddress: String,
+    dealer: {
+      type: String,
+      default: "none", // type = A,B,C
+    },
     roles: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Role",
       },
     ],
+    date: {
+      type: Date,
+      default: Date.now,
+    },
   })
 );
 

@@ -10,7 +10,6 @@ exports.signup = (req, res) => {
   const user = new User({
     username: req.body.username,
     email: req.body.email,
-    dbAddress: req.body.dbAddress,
     password: bcrypt.hashSync(req.body.password, 8),
   });
 
@@ -90,11 +89,14 @@ exports.signin = (req, res) => {
         });
       }
 
-      var token = jwt.sign({ id: user.id }, config.secret, {
+      // var token = jwt.sign({ id: user.id }, config.secret, {
+      var token = jwt.sign({ id: user.id }, process.env.SECRET, {
         expiresIn: 86400, // 24 hours
       });
 
       var authorities = [];
+
+      console.log("User---> ", user);
 
       for (let i = 0; i < user.roles.length; i++) {
         authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
@@ -108,3 +110,38 @@ exports.signin = (req, res) => {
       });
     });
 };
+
+// CRUD // Controller
+
+// Edit User
+// Find User from db --> edit user / role
+//TODO
+
+exports.editUser = async (req, res) => {
+  const filter = { email: req.body.email };
+  const update = { username: req.body.username, roles: req.body.roles };
+  let doc = await User.findOneAndUpdate(filter, update);
+  //
+  console.log("Doc before---> ", doc);
+  console.log("Doc ROLES before---> ", doc.roles[0].valueOf());
+
+  //
+  doc = await User.findOne(filter);
+  //
+  console.log("Doc after---> ", doc);
+  console.log("Doc ROLES after---> ", doc.roles[0].valueOf());
+  //
+  res.status(200).send({
+    username: doc.username,
+    email: doc.email,
+  });
+};
+
+// Delete User
+//TODO
+
+// Forget password
+//TODO
+
+// Reset password
+//TODO
